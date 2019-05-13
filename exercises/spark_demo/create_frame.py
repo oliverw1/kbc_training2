@@ -16,7 +16,7 @@ users = spark.createDataFrame(
 
 # A shorter way, with implicit assumptions
 currencies = spark.createDataFrame(
-    [("Euro", 1, 1), ("USD", 1.2, 1)],
+    [("Euro", 1.0, 1), ("USD", 1.2, 1)],
     ("currency", "value", "random")
 )
 

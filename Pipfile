@@ -4,11 +4,11 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pyspark-stubs = "*"
+pyspark-stubs = "==2.3.0.post5"
 
 [packages]
 holidays = "*"
 pyspark = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"

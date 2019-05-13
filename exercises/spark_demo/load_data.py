@@ -8,7 +8,7 @@ from pyspark.sql.functions import col
 
 spark = SparkSession.builder.getOrCreate()
 
-csv_file_path = Path(__file__).parent / "resources" / "foo.csv"
+csv_file_path = Path(__file__).parents[1] / "resources" / "foo.csv"
 
 # Python-esque:
 frame = spark.read.csv(str(csv_file_path), sep=";", header=True)
