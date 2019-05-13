@@ -7,14 +7,15 @@ from pyspark.sql.types import StringType, IntegerType, StructField, StructType
 spark = SparkSession.builder.getOrCreate()
 
 # The verbose way
-fields = [StructField("name", StringType(), nullable=False),
+fields = [StructField("name", StringType(), nullable=True),
           StructField("age", IntegerType(), nullable=True)]
 users = spark.createDataFrame(
-    [("Wim", 1), ("Conrad", 2)],
+    [("Wim", 1), (None, 2)],
     schema=StructType(fields)
 )
 
-# A shorter way, with implicit assumptions
+# A shorter way, with implicit assumptions: Spark will attempt to infer the datatypes.
+# They will typically be chosen overly large.
 currencies = spark.createDataFrame(
     [("Euro", 1.0, 1), ("USD", 1.2, 1)],
     ("currency", "value", "random")
