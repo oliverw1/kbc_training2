@@ -21,4 +21,4 @@ frame.printSchema()
 
 better_frame = frame.withColumn("Date_of_Birth", F.to_date(F.col("Date_of_Birth")))
 better_frame.printSchema()
-better_frame.write.orc(str(csv_file_path.parent / "as_parquet"))
+better_frame.repartition(3).write.parquet(str(csv_file_path.parent / "as_parquet"))
