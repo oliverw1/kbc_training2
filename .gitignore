@@ -4,6 +4,8 @@ spark-warehouse
 artifacts
 metastore_db/
 
+exercises/resources/flights/*.csv
+exercises/target
 # Editor extensions
 .idea
 
