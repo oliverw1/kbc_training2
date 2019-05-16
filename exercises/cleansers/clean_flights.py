@@ -78,7 +78,7 @@ def clean(frame: DataFrame) -> DataFrame:
            .withColumn('CancellationCode', col('CancellationCode').cast(StringType()))
            .withColumn('Diverted', col('Diverted').cast(BooleanType()))
            .withColumn('CarrierDelay', col('CarrierDelay').cast(ShortType()))
-           .withColumn('WeatherDelay', col('WeatherDelay').cast(StringType()))
+           .withColumn('WeatherDelay', col('WeatherDelay').cast(ShortType()))
            .withColumn('NASDelay', col('NASDelay').cast(ShortType()))
            .withColumn('SecurityDelay', col('SecurityDelay').cast(ShortType()))
            .withColumn('LateAircraftDelay', col('LateAircraftDelay').cast(ShortType()))
