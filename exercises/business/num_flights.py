@@ -34,6 +34,9 @@ frame = american_airlines_flights.select(delay_categories)
 expressions = [(sum((col(_) > 0).cast(ByteType()))
                     .alias("pos_{}_count".format(_)))
                for _ in delay_categories]
+# Note: the ability to _generate_ SQL expressions like this, with a simple for
+# loop is incredibly useful, as there are less chances for errors and you can
+# keep the amount of lines very small.
 frame.agg(*expressions).show()
 print("The pos_NASDelay_count shows that NASDelay should be focussed on")
 # This is of course assuming the incidents get labelled without bias. It
