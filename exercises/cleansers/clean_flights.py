@@ -140,7 +140,7 @@ if __name__ == "__main__":
 
     spark = SparkSession.builder.getOrCreate()
     # Extract
-    frame = read_data(resources_dir / "flights", spark)
+    frame = read_data(resources_dir / "flights" / "2008.csv", spark)
     # Transform
     cleaned_frame = clean(frame)
     # Load
