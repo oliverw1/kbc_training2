@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 
-from exercises.catalog.simple_catalog import load_frame_from_catalog, catalog
+from exercises.catalog.catalog import load_frame_from_catalog, catalog
 
 spark = SparkSession.builder.getOrCreate()
 

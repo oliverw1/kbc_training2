@@ -2,7 +2,7 @@ from datetime import date
 
 from pyspark.sql import SparkSession
 
-from exercises.catalog.simple_catalog import catalog, load_frame_from_catalog
+from exercises.catalog.catalog import catalog, load_frame_from_catalog
 
 
 def main(execution_date: date):

@@ -1,7 +1,7 @@
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import col, regexp_extract, year
 
-from exercises.catalog.simple_catalog import catalog, load_frame_from_catalog
+from exercises.catalog.catalog import catalog, load_frame_from_catalog
 
 
 def extract_carrier_operational_period(carriers, colname="Description") -> DataFrame:
@@ -59,7 +59,7 @@ def main(spark: SparkSession):
     (master_table
      .write.mode("overwrite")
      .format(master.format)
-     .save(master.path))
+     .save(str(master.path)))
 
 
 if __name__ == "__main__":
