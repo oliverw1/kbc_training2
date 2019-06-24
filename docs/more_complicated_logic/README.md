@@ -95,7 +95,7 @@ While we are using Airflow only to demonstrate automated scheduling with complex
 
 A CI/CD tool is your silent member of the team. When instructed correctly, it will do many useful things with code you develop and infrastructure that you have scripted (-> configuration as code).
 
-With Continuous Integration (CI), the goal is to integrate changes made by developers to "what is running in production" regularly. Multiple times per day is considered ideal. The thought behind this is that small changes can be easily inspected and do not require a lot of developer thought to understand. This "what is running in production" idea typically maps to the master branch of any version control system. Continuous Development (CD) is closely related: it ensures that the master branch is at all times ready to be deployed to production machines and users (think about documentation here).
+With Continuous Integration (CI), the goal is to integrate changes made by developers to "what is running in production" regularly. Multiple times per day is considered ideal. The thought behind this is that small changes can be easily inspected and do not require a lot of developer thought to understand. This "what is running in production" idea typically maps to the master branch of any version control system. Continuous Delivery (CD) is closely related: it ensures that the master branch is at all times ready to be deployed to production machines and users (think about documentation here).
 
 We will be working with [Concourse](https://concourse-ci.org/).
 
