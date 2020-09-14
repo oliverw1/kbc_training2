@@ -14,12 +14,16 @@ def test_label_weekend():
     # make sure to explore
     # https://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.sql.functions
 
-    expected = (spark.createDataFrame([
-        (date(2018, 5, 12), "a", True),
-        (date(2019, 5, 13), "b", False)
-    ], schema=StructType([StructField("date", DateType(), True),
-                          StructField("foo", StringType(), True),
-                          StructField("is_weekend", BooleanType(), True)])))
+    expected = spark.createDataFrame(
+        [(date(2018, 5, 12), "a", True), (date(2019, 5, 13), "b", False)],
+        schema=StructType(
+            [
+                StructField("date", DateType(), True),
+                StructField("foo", StringType(), True),
+                StructField("is_weekend", BooleanType(), True),
+            ]
+        ),
+    )
     frame_in = expected.select("date", "foo")
 
     actual = label_weekend(frame_in)
@@ -27,22 +31,32 @@ def test_label_weekend():
 
 
 def test_label_holidays():
-    fields = [StructField("date", DateType(), False),
-              StructField("foobar", StringType(), True),
-              StructField("is_belgian_holiday", BooleanType(), True)]
-    input = spark.createDataFrame([
-        (date(2019, 1, 1), "foo"),  # New Year's
-        (date(2019, 7, 21), "bar"),  # National holiday
-        (date(2019, 12, 6), "fubar")],  # Saint-Nicholas
-        schema=StructType(fields[:2])
+    fields = [
+        StructField("date", DateType(), False),
+        StructField("foobar", StringType(), True),
+        StructField("is_belgian_holiday", BooleanType(), True),
+    ]
+    input = spark.createDataFrame(
+        [
+            (date(2019, 1, 1), "foo"),  # New Year's
+            (date(2019, 7, 21), "bar"),  # National holiday
+            (date(2019, 12, 6), "fubar"),
+        ],  # Saint-Nicholas
+        schema=StructType(fields[:2]),
     )
     output = label_holidays3(input)
     output.show()
-    expected = spark.createDataFrame([
-        (date(2019, 1, 1), "foo", True),  # New Year's
-        (date(2019, 7, 21), "bar", True,),  # National holiday
-        (date(2019, 12, 6), "fubar", False)],  # Saint-Nicholas
-        schema=StructType(fields)
+    expected = spark.createDataFrame(
+        [
+            (date(2019, 1, 1), "foo", True),  # New Year's
+            (
+                date(2019, 7, 21),
+                "bar",
+                True,
+            ),  # National holiday
+            (date(2019, 12, 6), "fubar", False),
+        ],  # Saint-Nicholas
+        schema=StructType(fields),
     )
     assert_frames_functionally_equivalent(output, expected, False)
 

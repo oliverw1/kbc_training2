@@ -16,25 +16,19 @@ class DataLink(NamedTuple):
 
 csv_options = {"header": "true", "inferschema": "false"}
 catalog = {
-    "raw_flights": DataLink("csv",
-                            RESOURCES_DIR / "flights" / "2008.csv",
-                            csv_options),
-    "raw_airports": DataLink("csv",
-                             RESOURCES_DIR / "flights" / "airports.csv",
-                             csv_options),
-    "raw_carriers": DataLink("csv",
-                             RESOURCES_DIR / "flights" / "carriers.csv",
-                             csv_options),
+    "raw_flights": DataLink("csv", RESOURCES_DIR / "flights" / "2008.csv", csv_options),
+    "raw_airports": DataLink(
+        "csv", RESOURCES_DIR / "flights" / "airports.csv", csv_options
+    ),
+    "raw_carriers": DataLink(
+        "csv", RESOURCES_DIR / "flights" / "carriers.csv", csv_options
+    ),
     "clean_flights": DataLink("parquet", TARGET_DIR / "cleaned_flights", {}),
     "clean_airports": DataLink("parquet", TARGET_DIR / "clean_airports", {}),
     "clean_carriers": DataLink("parquet", TARGET_DIR / "clean_carriers", {}),
-    "master_flights": DataLink("parquet", TARGET_DIR / "master_flights", {})
+    "master_flights": DataLink("parquet", TARGET_DIR / "master_flights", {}),
 }
 
 
 def load_frame_from_catalog(spark: SparkSession, link: DataLink) -> DataFrame:
-    return (spark.read
-            .options(**link.options)
-            .format(link.format)
-            .load(str(link.path))
-            )
+    return spark.read.options(**link.options).format(link.format).load(str(link.path))

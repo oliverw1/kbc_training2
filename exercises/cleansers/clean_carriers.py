@@ -11,10 +11,11 @@ def main(execution_date: date):
 
     # no cleansing actions are required. Store it as parquet though.
 
-    (df.write
-     .mode("overwrite")
-     .format(catalog["clean_carriers"].format)
-     .save(str(catalog["clean_carriers"].path)))
+    (
+        df.write.mode("overwrite")
+        .format(catalog["clean_carriers"].format)
+        .save(str(catalog["clean_carriers"].path))
+    )
 
 
 if __name__ == "__main__":

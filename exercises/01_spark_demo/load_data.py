@@ -13,11 +13,11 @@ csv_file_path = Path(__file__).parents[1] / "resources" / "foo.csv"
 # Python-esque:
 frame = spark.read.csv(str(csv_file_path), sep=";", header=True)
 # Scala-like:
-frame = (spark # With parentheses like this, you can add comments in long chains
-         .read # This would not have been possible with the backslash
-         .options(header="true", sep=";")
-         .csv(str(csv_file_path))
-         )
+frame = spark.read.options(  # With parentheses like this, you can add comments in long chains  # This would not have been possible with the backslash
+    header="true", sep=";"
+).csv(
+    str(csv_file_path)
+)
 print(frame.schema)
 frame.show()
 frame.printSchema()

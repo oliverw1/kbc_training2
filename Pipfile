@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 pyspark-stubs = "==2.3.0.post5"
 pytest = "*"
+black = "*"
 
 [packages]
 holidays = "*"

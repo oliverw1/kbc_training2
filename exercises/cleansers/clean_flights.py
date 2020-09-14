@@ -41,48 +41,50 @@ def fix_null_placeholder(colname: str, placeholder: str) -> Column:
 
 
 def read_data(path: Path, session: SparkSession):
-    return (session.read
-            # For a CSV, `inferschema=False` means every column stays of the string
-            # type. There is no time wasted on inferring the schema, which is
-            # arguably not something you would depend on in production either.
-            .option("inferschema", "false")
-            .option("header", "true")
-            .csv(str(path)))
+    return (
+        session.read
+        # For a CSV, `inferschema=False` means every column stays of the string
+        # type. There is no time wasted on inferring the schema, which is
+        # arguably not something you would depend on in production either.
+        .option("inferschema", "false")
+        .option("header", "true")
+        .csv(str(path))
+    )
 
 
 def clean(frame: DataFrame) -> DataFrame:
     # First, get the majority of columns “fixed”, i.e. their datatypes improved.
-    df2 = (frame
-           .withColumn('Year', col('Year').cast(ShortType()))
-           .withColumn('Month', col('Month').cast(ByteType()))
-           .withColumn('DayofMonth', col('DayofMonth').cast(ByteType()))
-           .withColumn('DayOfWeek', col('DayOfWeek').cast(ByteType()))
-           .withColumn('DepTime', col('DepTime').cast(ShortType()))  # TODO
-           .withColumn('CRSDepTime', col('CRSDepTime').cast(ShortType()))  #
-           .withColumn('ArrTime', col('ArrTime').cast(ShortType()))
-           .withColumn('CRSArrTime', col('CRSArrTime').cast(ShortType()))
-           # .withColumn('UniqueCarrier', col('UniqueCarrier').cast(StringType()))
-           .withColumn('FlightNum', col('FlightNum').cast(ShortType()))
-           .withColumn('TailNum', col('TailNum').cast(IntegerType()))
-           .withColumn('ActualElapsedTime', col('ActualElapsedTime').cast(ShortType()))
-           .withColumn('CRSElapsedTime', col('CRSElapsedTime').cast(ShortType()))
-           .withColumn('AirTime', col('AirTime').cast(ShortType()))
-           .withColumn('ArrDelay', col('ArrDelay').cast(ShortType()))
-           .withColumn('DepDelay', col('DepDelay').cast(ShortType()))
-           .withColumn('Origin', col('Origin').cast(StringType()))
-           .withColumn('Dest', col('Dest').cast(StringType()))
-           .withColumn('Distance', col('Distance').cast(IntegerType()))  # Short
-           .withColumn('TaxiIn', col('TaxiIn').cast(ShortType()))
-           .withColumn('TaxiOut', col('TaxiOut').cast(ShortType()))
-           .withColumn('Cancelled', col('Cancelled').cast(BooleanType()))
-           .withColumn('CancellationCode', col('CancellationCode').cast(StringType()))
-           .withColumn('Diverted', col('Diverted').cast(BooleanType()))
-           .withColumn('CarrierDelay', col('CarrierDelay').cast(ShortType()))
-           .withColumn('WeatherDelay', col('WeatherDelay').cast(ShortType()))
-           .withColumn('NASDelay', col('NASDelay').cast(ShortType()))
-           .withColumn('SecurityDelay', col('SecurityDelay').cast(ShortType()))
-           .withColumn('LateAircraftDelay', col('LateAircraftDelay').cast(ShortType()))
-           )
+    df2 = (
+        frame.withColumn("Year", col("Year").cast(ShortType()))
+        .withColumn("Month", col("Month").cast(ByteType()))
+        .withColumn("DayofMonth", col("DayofMonth").cast(ByteType()))
+        .withColumn("DayOfWeek", col("DayOfWeek").cast(ByteType()))
+        .withColumn("DepTime", col("DepTime").cast(ShortType()))  # TODO
+        .withColumn("CRSDepTime", col("CRSDepTime").cast(ShortType()))  #
+        .withColumn("ArrTime", col("ArrTime").cast(ShortType()))
+        .withColumn("CRSArrTime", col("CRSArrTime").cast(ShortType()))
+        # .withColumn('UniqueCarrier', col('UniqueCarrier').cast(StringType()))
+        .withColumn("FlightNum", col("FlightNum").cast(ShortType()))
+        .withColumn("TailNum", col("TailNum").cast(IntegerType()))
+        .withColumn("ActualElapsedTime", col("ActualElapsedTime").cast(ShortType()))
+        .withColumn("CRSElapsedTime", col("CRSElapsedTime").cast(ShortType()))
+        .withColumn("AirTime", col("AirTime").cast(ShortType()))
+        .withColumn("ArrDelay", col("ArrDelay").cast(ShortType()))
+        .withColumn("DepDelay", col("DepDelay").cast(ShortType()))
+        .withColumn("Origin", col("Origin").cast(StringType()))
+        .withColumn("Dest", col("Dest").cast(StringType()))
+        .withColumn("Distance", col("Distance").cast(IntegerType()))  # Short
+        .withColumn("TaxiIn", col("TaxiIn").cast(ShortType()))
+        .withColumn("TaxiOut", col("TaxiOut").cast(ShortType()))
+        .withColumn("Cancelled", col("Cancelled").cast(BooleanType()))
+        .withColumn("CancellationCode", col("CancellationCode").cast(StringType()))
+        .withColumn("Diverted", col("Diverted").cast(BooleanType()))
+        .withColumn("CarrierDelay", col("CarrierDelay").cast(ShortType()))
+        .withColumn("WeatherDelay", col("WeatherDelay").cast(ShortType()))
+        .withColumn("NASDelay", col("NASDelay").cast(ShortType()))
+        .withColumn("SecurityDelay", col("SecurityDelay").cast(ShortType()))
+        .withColumn("LateAircraftDelay", col("LateAircraftDelay").cast(ShortType()))
+    )
     # The solution above is good. However, there's a lot of repetition and it's not
     # easy to find out which columns are somewhat similar.
     # One way to improve this, would be to group columns of similar types in a
@@ -104,17 +106,16 @@ def clean(frame: DataFrame) -> DataFrame:
 
     # Now, the columns that couldn't be dealt with by a mere “cast” can get
     # special care:
-    df3 = (df2.withColumn("Date",
-                          to_date(concat_ws("-", col("Year"), col("Month"),
-                                            col("DayOfMonth"))))
-           .drop("Year", "Month", "DayOfMonth", "DayOfWeek"))
+    df3 = df2.withColumn(
+        "Date", to_date(concat_ws("-", col("Year"), col("Month"), col("DayOfMonth")))
+    ).drop("Year", "Month", "DayOfMonth", "DayOfWeek")
 
-    df4 = (df3
-           .withColumn("DepTime", hhmm_to_minutes_since_midnight(col("DepTime")))
-           .withColumn("CRSDepTime", hhmm_to_minutes_since_midnight(col("CRSDepTime")))
-           .withColumn("ArrTime", hhmm_to_minutes_since_midnight(col("ArrTime")))
-           .withColumn("CRSArrTime", hhmm_to_minutes_since_midnight(col("CRSArrTime")))
-           )
+    df4 = (
+        df3.withColumn("DepTime", hhmm_to_minutes_since_midnight(col("DepTime")))
+        .withColumn("CRSDepTime", hhmm_to_minutes_since_midnight(col("CRSDepTime")))
+        .withColumn("ArrTime", hhmm_to_minutes_since_midnight(col("ArrTime")))
+        .withColumn("CRSArrTime", hhmm_to_minutes_since_midnight(col("CRSArrTime")))
+    )
     # Again, repetition for these last 4 columns. It would be less copy-pasting,
     # if you simply use a loop. Like this:
     # for colname in {"DepTime", "CRSDepTime", "ArrTime", "CRSArrTime"}:

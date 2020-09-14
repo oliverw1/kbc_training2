@@ -11,11 +11,7 @@ spark = SparkSession.builder.getOrCreate()
 csv_file_path = Path(__file__).parents[1] / "resources" / "foo.csv"
 
 
-frame = (spark
-         .read
-         .options(header="true", sep=";")
-         .csv(str(csv_file_path))
-         )
+frame = spark.read.options(header="true", sep=";").csv(str(csv_file_path))
 
 frame.printSchema()
 
